@@ -45,8 +45,10 @@ int f2fs_read_inline_data(struct inode *inode, struct page *page)
 	}
 
 	ipage = get_node_page(sbi, inode->i_ino);
-	if (IS_ERR(ipage))
+	if (IS_ERR(ipage)) {
+		unlock_page(page);
 		return PTR_ERR(ipage);
+	}
 
 	zero_user_segment(page, MAX_INLINE_DATA, PAGE_CACHE_SIZE);
 
@@ -79,8 +81,10 @@ static int __f2fs_convert_inline_data(struct inode *inode, struct page *page)
 
 	f2fs_lock_op(sbi);
 	ipage = get_node_page(sbi, inode->i_ino);
-	if (IS_ERR(ipage))
-		return PTR_ERR(ipage);
+	if (IS_ERR(ipage)) {
+		err = PTR_ERR(ipage);
+		goto out;
+	}
 
 	/*
 	 * i_addr[0] is not used for inline data,
@@ -88,10 +92,8 @@ static int __f2fs_convert_inline_data(struct inode *inode, struct page *page)
 	 */
 	set_new_dnode(&dn, inode, ipage, NULL, 0);
 	err = f2fs_reserve_block(&dn, 0);
-	if (err) {
-		f2fs_unlock_op(sbi);
-		return err;
-	}
+	if (err)
+		goto out;
 
 	zero_user_segment(page, MAX_INLINE_DATA, PAGE_CACHE_SIZE);
 
@@ -106,7 +108,7 @@ static int __f2fs_convert_inline_data(struct inode *inode, struct page *page)
 	set_page_writeback(page);
 	write_data_page(page, &dn, &new_blk_addr, &fio);
 	update_extent_cache(new_blk_addr, &dn);
-	f2fs_wait_on_page_writeback(page, DATA, true);
+	f2fs_wait_on_page_writeback(page, DATA);
 
 	/* clear inline data and flag after data writeback */
 	zero_user_segment(ipage, INLINE_DATA_OFFSET,
@@ -116,6 +118,7 @@ static int __f2fs_convert_inline_data(struct inode *inode, struct page *page)
 
 	sync_inode_page(&dn);
 	f2fs_put_dnode(&dn);
+out:
 	f2fs_unlock_op(sbi);
 	return err;
 }

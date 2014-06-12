@@ -169,7 +169,7 @@ static struct posix_acl *f2fs_get_acl(struct inode *inode, int type)
 
 	retval = f2fs_getxattr(inode, name_index, "", NULL, 0);
 	if (retval > 0) {
-		value = kmalloc(retval, GFP_KERNEL);
+		value = kmalloc(retval, GFP_F2FS_ZERO);
 		if (!value)
 			return ERR_PTR(-ENOMEM);
 		retval = f2fs_getxattr(inode, name_index, "", value, retval);
@@ -221,10 +221,11 @@ static int f2fs_set_acl(struct inode *inode, int type,
 	size_t size = 0;
 	int error;
 
-	if (!test_opt(sbi, POSIX_ACL))
-		return 0;
-	if (S_ISLNK(inode->i_mode))
-		return -EOPNOTSUPP;
+	if (acl) {
+		error = posix_acl_valid(acl);
+		if (error < 0)
+			return error;
+	}
 
 	switch (type) {
 	case ACL_TYPE_ACCESS:
@@ -259,7 +260,7 @@ static int f2fs_set_acl(struct inode *inode, int type,
 		}
 	}
 
-	error = f2fs_setxattr(inode, name_index, "", value, size, ipage);
+	error = f2fs_setxattr(inode, name_index, "", value, size, ipage, 0);
 
 	kfree(value);
 	if (!error)
@@ -288,17 +289,14 @@ int f2fs_init_acl(struct inode *inode, struct inode *dir, struct page *ipage)
 	if (!test_opt(sbi, POSIX_ACL) || !acl)
 		goto cleanup;
 
-	mode_t mode = inode->i_mode;
-
 	if (S_ISDIR(inode->i_mode)) {
 		error = f2fs_set_acl(inode, ACL_TYPE_DEFAULT, acl, ipage);
 		if (error)
 			goto cleanup;
 	}
-	error = posix_acl_create(&acl, GFP_KERNEL, &mode);
+	error = posix_acl_create(&acl, GFP_KERNEL, &inode->i_mode);
 	if (error < 0)
 		return error;
-	inode->i_mode = mode;
 	if (error > 0)
 		error = f2fs_set_acl(inode, ACL_TYPE_ACCESS, acl, ipage);
 cleanup:

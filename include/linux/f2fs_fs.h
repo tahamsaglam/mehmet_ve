@@ -146,6 +146,9 @@ struct f2fs_extent {
 #define ADDRS_PER_BLOCK		1018	/* Address Pointers in a Direct Block */
 #define NIDS_PER_BLOCK		1018	/* Node IDs in an Indirect Block */
 
+#define ADDRS_PER_PAGE(page, fi)	\
+	(IS_INODE(page) ? ADDRS_PER_INODE(fi) : ADDRS_PER_BLOCK)
+
 #define	NODE_DIR1_BLOCK		(DEF_ADDRS_PER_INODE + 1)
 #define	NODE_DIR2_BLOCK		(DEF_ADDRS_PER_INODE + 2)
 #define	NODE_IND1_BLOCK		(DEF_ADDRS_PER_INODE + 3)
@@ -183,7 +186,7 @@ struct f2fs_inode {
 	__le32 i_pino;			/* parent inode number */
 	__le32 i_namelen;		/* file name length */
 	__u8 i_name[F2FS_NAME_LEN];	/* file name for SPOR */
-	__u8 i_reserved2;		/* for backward compatibility */
+	__u8 i_dir_level;		/* dentry_level for large dir */
 
 	struct f2fs_extent i_ext;	/* caching a largest extent */
 
