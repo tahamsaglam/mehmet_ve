@@ -27,4 +27,12 @@
 /* Required by ION to allocate scatterlist(sglist) with nents > 256 */
 #define ARCH_HAS_SG_CHAIN
 
+#ifdef CONFIG_KEXEC_HARDBOOT
+#ifdef CONFIG_MACH_MEHMET
+#define KEXEC_HB_PAGE_ADDR 0x40000000
+#else
+#error "Adress for kexec hardboot page not defined"
+#endif
+#endif
+
 #endif /* __ASM_ARCH_MEMORY_H */

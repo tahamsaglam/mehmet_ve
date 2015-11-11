@@ -134,6 +134,10 @@
 #include <mach/tmu.h>
 #endif
 
+#ifdef CONFIG_KEXEC_HARDBOOT
+#include <asm/kexec.h>
+#endif
+
 #ifdef CONFIG_INPUT_L3G4200D_GYR
 #include <linux/l3g4200d_gyr.h>
 #endif
