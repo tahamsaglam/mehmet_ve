@@ -24,10 +24,6 @@
 
 #define CPUFREQ_NAME_LEN 32
 
-#if defined(CONFIG_CPU_EXYNOS4212) || defined(CONFIG_CPU_EXYNOS4412)
-#define CPUFREQ_LEVEL_END	(L18 + 1)
-#endif
-
 
 /*********************************************************************
  *                     CPUFREQ NOTIFIER INTERFACE                    *
