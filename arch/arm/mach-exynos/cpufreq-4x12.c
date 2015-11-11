@@ -576,7 +576,7 @@ static void exynos4x12_set_frequency(unsigned int old_index,
 
 		if ((samsung_rev() >= EXYNOS4412_REV_2_0)
 			&& (exynos_result_of_asv > 2)
-			&& (old_index > L10) && (new_index <= L10)) {
+			&& (old_index > L9) && (new_index <= L9)) {
 				exynos4x12_set_abb_member(ABB_ARM, ABB_MODE_130V);
 		}
 
@@ -614,7 +614,7 @@ static void exynos4x12_set_frequency(unsigned int old_index,
 		}
 		if ((samsung_rev() >= EXYNOS4412_REV_2_0)
 			&& (exynos_result_of_asv > 2)
-			&& (old_index <= L10) && (new_index > L10)) {
+			&& (old_index <= L9) && (new_index > L9)) {
 				exynos4x12_set_abb_member(ABB_ARM, ABB_MODE_100V);
 		}
 		if (exynos4x12_volt_table[new_index] < 950000 &&
@@ -624,7 +624,7 @@ static void exynos4x12_set_frequency(unsigned int old_index,
 
 	/* ABB value is changed in below case */
 	if (soc_is_exynos4412() && (exynos_result_of_asv > 3) && (samsung_rev() < EXYNOS4412_REV_2_0)) {
-		if (new_index == L18)
+		if (new_index == L15)
 			exynos4x12_set_abb_member(ABB_ARM, ABB_MODE_100V);
 		else
 			exynos4x12_set_abb_member(ABB_ARM, ABB_MODE_130V);
@@ -727,15 +727,15 @@ static void __init set_volt_table(void)
 			switch (tmp) {
 			case 1:
 				/* 500MHz fixed volt */
-				i = L13;
+				i = L12;
 				break;
 			case 2:
 				/* 700MHz fixed volt */
-				i = L11;
+				i = L10;
 				break;
 			case 3:
 				/* 800MHz fixed volt */
-				i = L10;
+				i = L9;
 				break;
 			default:
 				break;
@@ -839,7 +839,7 @@ int exynos4x12_cpufreq_init(struct exynos_dvfs_info *info)
 	}
 
 	info->mpll_freq_khz = rate;
-	info->pm_lock_idx = L12;
+	info->pm_lock_idx = L10;
 	info->pll_safe_idx = L8;
 	info->max_support_idx = max_support_idx;
 	info->min_support_idx = min_support_idx;
