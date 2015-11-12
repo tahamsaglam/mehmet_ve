@@ -49,11 +49,11 @@ struct cpufreq_clkdiv {
 static unsigned int exynos4x12_volt_table[CPUFREQ_LEVEL_END];
 
 static struct cpufreq_frequency_table exynos4x12_freq_table[] = {
-	{L0, 1800*1000},
-	{L1, 1600*1000},
-	{L2, 1450*1000},
-	{L3, 1300*1000},
-	{L4, 1200*1000},
+	{L0, 2000*1000},
+	{L1, 1850*1000},
+	{L2, 1700*1000},
+	{L3, 1450*1000},
+	{L4, 1250*1000},
 	{L5, 1100*1000},
 	{L6, 1000*1000},
 	{L7, 900*1000},
