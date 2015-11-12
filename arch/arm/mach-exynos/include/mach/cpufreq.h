@@ -14,6 +14,10 @@
  * This should be same with cpufreq_frequency_table
 */
 
+
+#define CPU_UV_MV_MAX 1500000
+#define CPU_UV_MV_MIN 600000
+
 enum cpufreq_level_index {
 	L0, L1, L2, L3, L4,
 	L5, L6, L7, L8, L9,
@@ -23,9 +27,13 @@ enum cpufreq_level_index {
 };
 
 enum busfreq_level_request {
-	BUS_L0,		/* MEM 400MHz BUS 200MHz */
-	BUS_L1,		/* MEM 267MHz BUS 160MHz */
-	BUS_L2,		/* MEM 133MHz BUS 133MHz */
+	BUS_L0,		/* MEM 400MHz BUS 266MHz */
+	BUS_L1,		/* MEM 400MHz BUS 200MHz */
+	BUS_L2,		/* MEM 267MHz BUS 200MHz */
+	BUS_L3,		/* MEM 267MHz BUS 160MHz */
+	BUS_L4,		/* MEM 160MHz BUS 160MHz */
+	BUS_L5,		/* MEM 133MHz BUS 133MHz */
+	BUS_L6,		/* MEM 100MHz BUS 100MHz */
 	BUS_LEVEL_END,
 };
 
